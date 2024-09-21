@@ -3,6 +3,8 @@ import cors from "cors";
 import "dotenv/config";
 import mongoose from "mongoose";
 
+import MyUserRoute from "./routes/MyUserRoute";
+
 // establish connection between backend and mongodb
 mongoose
   .connect(process.env.MONGODB_CONNECTION_URL as string)
@@ -18,9 +20,7 @@ app.use(express.json());
 resource sharing */
 app.use(cors());
 
-app.get("/test", (req: Request, res: Response) => {
-  res.json({ message: "Hello from backend!" });
-});
+app.use('/api/my/user', MyUserRoute)
 
 /* start express server and listen
 for incoming requests */
