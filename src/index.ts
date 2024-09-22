@@ -4,7 +4,6 @@ import "dotenv/config";
 import mongoose from "mongoose";
 
 import MyUserRoute from "./routes/MyUserRoute";
-import { jwtCheck } from "./middlewares/auth";
 
 // establish connection between backend and mongodb
 mongoose
@@ -21,7 +20,7 @@ app.use(express.json());
 resource sharing */
 app.use(cors());
 
-app.use("/api/my/user", jwtCheck, MyUserRoute);
+app.use("/api/my/user", MyUserRoute);
 
 /* start express server and listen
 for incoming requests */
