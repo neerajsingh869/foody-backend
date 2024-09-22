@@ -27,7 +27,7 @@ const createCurrentUser = async (req: Request, res: Response) => {
 const updateCurrentUser = async (req: Request, res: Response) => {
   try {
     // get the necessary details from request object
-    const {name, addressLine1, country, city} = req.body;
+    const { name, addressLine1, country, city } = req.body;
 
     // fetch user from database on the basis of userId
     const user = await User.findById(req.userId);

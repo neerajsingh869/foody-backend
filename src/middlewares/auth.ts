@@ -8,8 +8,8 @@ new property in Request interface */
 declare global {
   namespace Express {
     interface Request {
-      auth0Id: string,
-      userId: string,
+      auth0Id: string;
+      userId: string;
     }
   }
 }
@@ -23,7 +23,11 @@ export const jwtCheck = auth({
 
 /* middleware to decode access token, find auth0Id & userId, 
 and then update the req object before sending the request to controller */
-export const jwtParse = async (req: Request, res: Response, next: NextFunction) => {
+export const jwtParse = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
@@ -36,8 +40,8 @@ export const jwtParse = async (req: Request, res: Response, next: NextFunction) 
     const decodedAccessToken = jwt.decode(accessToken) as jwt.JwtPayload;
 
     const auth0Id = decodedAccessToken.sub;
-    const user = await User.findOne({auth0Id});
-    
+    const user = await User.findOne({ auth0Id });
+
     if (!user) {
       return res.sendStatus(401);
     }
