@@ -20,6 +20,10 @@ app.use(express.json());
 resource sharing */
 app.use(cors());
 
+app.get("/health", async (req: Request, res: Response) => {
+  res.json({message: "Health OK!"});
+})
+
 app.use("/api/my/user", MyUserRoute);
 
 /* start express server and listen
