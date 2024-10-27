@@ -4,6 +4,21 @@ import { v2 as cloudinary } from "cloudinary";
 
 import Restaurant from "../models/Restaurant";
 
+const getMyRestaurant = async (req: Request, res: Response) => {
+  try {
+    let restaurant = await Restaurant.findOne({ user: req.userId });
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaruant does not exist." });
+    }
+
+    res.status(200).json(restaurant);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ message: "Error fetching restaurant." });
+  }
+};
+
 const createMyRestaurant = async (req: Request, res: Response) => {
   try {
     const existingRestaurant = await Restaurant.findOne({ user: req.userId });
@@ -42,5 +57,6 @@ const uploadImage = async (file: Express.Multer.File): Promise<any> => {
 };
 
 export default {
+  getMyRestaurant,
   createMyRestaurant,
 };
