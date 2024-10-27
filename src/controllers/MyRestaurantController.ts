@@ -24,7 +24,6 @@ const createMyRestaurant = async (req: Request, res: Response) => {
     const existingRestaurant = await Restaurant.findOne({ user: req.userId });
 
     if (existingRestaurant) {
-      console.log(existingRestaurant);
       return res
         .status(409)
         .json({ message: "User restaurant already exists." });
@@ -56,7 +55,40 @@ const uploadImage = async (file: Express.Multer.File): Promise<any> => {
   return uploadResponse.url;
 };
 
+const updateMyRestaurant = async (req: Request, res: Response) => {
+  try {
+    const existingRestaurant = await Restaurant.findOne({user: req.userId});
+
+    if (!existingRestaurant) {
+      return res.status(404).json({message: "Restaurant not found."});
+    }
+
+    existingRestaurant.restaurantName = req.body.restaurantName;
+    existingRestaurant.city = req.body.city;
+    existingRestaurant.country = req.body.country;
+    existingRestaurant.deliveryPrice = req.body.deliveryPrice;
+    existingRestaurant.estimatedDeliveryTime = req.body.estimatedDeliveryTime;
+    existingRestaurant.cuisines = req.body.cuisines;
+    existingRestaurant.menuItems = req.body.menuItems;
+    existingRestaurant.lastUpdated = new Date();
+
+    if (req.file) {
+      const imageUrl = await uploadImage(req.file as Express.Multer.File);
+      existingRestaurant.imageUrl = imageUrl;
+    }
+
+    await existingRestaurant.save();
+
+    res.status(200).json(existingRestaurant);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ message: "Error creating restaurant." });
+  }
+}
+
 export default {
   getMyRestaurant,
   createMyRestaurant,
+  updateMyRestaurant,
 };
