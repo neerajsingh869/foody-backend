@@ -2,10 +2,11 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import "dotenv/config";
 import mongoose from "mongoose";
-import { v2 as cloudinary } from 'cloudinary'
+import { v2 as cloudinary } from "cloudinary";
 
 import MyUserRoute from "./routes/MyUserRoute";
 import MyRestaurantRoute from "./routes/MyRestaurantRoute";
+import RestarauntRoute from "./routes/RestaurantRoute";
 
 // establish connection between backend and mongodb
 mongoose
@@ -13,10 +14,10 @@ mongoose
   .then(() => console.log("Database connection successful!"));
 
 // configure cloudinary environment
-cloudinary.config({ 
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-  api_key: process.env.CLOUDINARY_API_KEY, 
-  api_secret: process.env.CLOUDINARY_API_SECRET
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 const app = express();
@@ -30,11 +31,12 @@ resource sharing */
 app.use(cors());
 
 app.get("/health", async (req: Request, res: Response) => {
-  res.json({message: "Health OK!"});
-})
+  res.json({ message: "Health OK!" });
+});
 
 app.use("/api/my/user", MyUserRoute);
 app.use("/api/my/restaurant", MyRestaurantRoute);
+app.use("/api/restaurant", RestarauntRoute);
 
 /* start express server and listen
 for incoming requests */
