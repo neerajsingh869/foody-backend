@@ -60,7 +60,7 @@ const searchRestaurant = async (req: Request, res: Response) => {
       pagination: {
         total,
         page,
-        pages: Math.ceil(total / pageSize),
+        pages: Math.max(Math.ceil(total / pageSize), 1),
       },
     };
 
