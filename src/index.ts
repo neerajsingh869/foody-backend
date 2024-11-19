@@ -7,6 +7,7 @@ import { v2 as cloudinary } from "cloudinary";
 import MyUserRoute from "./routes/MyUserRoute";
 import MyRestaurantRoute from "./routes/MyRestaurantRoute";
 import RestarauntRoute from "./routes/RestaurantRoute";
+import OrderRoute from "./routes/OrderRoute";
 
 // establish connection between backend and mongodb
 mongoose
@@ -37,6 +38,7 @@ app.get("/health", async (req: Request, res: Response) => {
 app.use("/api/my/user", MyUserRoute);
 app.use("/api/my/restaurant", MyRestaurantRoute);
 app.use("/api/restaurant", RestarauntRoute);
+app.use("/api/order", OrderRoute);
 
 /* start express server and listen
 for incoming requests */
