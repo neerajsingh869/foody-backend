@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { Request, Response } from "express";
 import Restaurant, { MenuItemType } from "../models/Restaurant";
+import Order from "../models/Order";
 
 const STRIPE = new Stripe(process.env.STRIPE_API_KEY as string);
 const FRONTEND_URL = process.env.FRONTEND_URL as string;
@@ -33,6 +34,15 @@ const createCheckoutSession = async (req: Request, res: Response) => {
       return;
     }
 
+    const newOrder = new Order({
+      user: req.userId,
+      restaurant: restaurant,
+      cartItems: checkoutSessionRequest.cartItems,
+      deliveryDetails: checkoutSessionRequest.deliveryDetails,
+      status: "placed",
+      createdAt: new Date(),
+    });
+
     const lineItems = createLineItems(
       checkoutSessionRequest,
       restaurant.menuItems
@@ -49,6 +59,8 @@ const createCheckoutSession = async (req: Request, res: Response) => {
       res.status(500).json({message: "Error in create stripe session url."});
       return;
     }
+
+    await newOrder.save();
 
     res.json({url: session.url});
   } catch (error) {
