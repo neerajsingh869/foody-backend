@@ -23,13 +23,15 @@ cloudinary.config({
 
 const app = express();
 
-/* middleware used to convert request
-body into json */
-app.use(express.json());
-
 /* middleware used to allow cross origin
 resource sharing */
 app.use(cors());
+
+app.use("/api/order/checkout/webhook", express.raw({ type: "*/*" }));
+
+/* middleware used to convert request
+body into json */
+app.use(express.json());
 
 app.get("/health", async (req: Request, res: Response) => {
   res.json({ message: "Health OK!" });
