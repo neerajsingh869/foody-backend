@@ -3,6 +3,27 @@ import mongoose from "mongoose";
 import { v2 as cloudinary } from "cloudinary";
 
 import Restaurant from "../models/Restaurant";
+import Order from "../models/Order";
+
+const getMyRestaurantOrders = async (req: Request, res: Response) => {
+  try {
+    const restaurant = await Restaurant.findOne({ user: req.userId });
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found." });
+    }
+
+    const orders = await Order.find({ restaurant: restaurant._id })
+      .populate("restaurant")
+      .populate("user");
+
+    res.json(orders);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ message: "Error fetching orders." });
+  }
+};
 
 const getMyRestaurant = async (req: Request, res: Response) => {
   try {
@@ -54,10 +75,10 @@ const uploadImage = async (file: Express.Multer.File): Promise<any> => {
 
 const updateMyRestaurant = async (req: Request, res: Response) => {
   try {
-    const existingRestaurant = await Restaurant.findOne({user: req.userId});
+    const existingRestaurant = await Restaurant.findOne({ user: req.userId });
 
     if (!existingRestaurant) {
-      return res.status(404).json({message: "Restaurant not found."});
+      return res.status(404).json({ message: "Restaurant not found." });
     }
 
     existingRestaurant.restaurantName = req.body.restaurantName;
@@ -82,9 +103,10 @@ const updateMyRestaurant = async (req: Request, res: Response) => {
 
     res.status(500).json({ message: "Error creating restaurant." });
   }
-}
+};
 
 export default {
+  getMyRestaurantOrders,
   getMyRestaurant,
   createMyRestaurant,
   updateMyRestaurant,
