@@ -5,6 +5,32 @@ import { v2 as cloudinary } from "cloudinary";
 import Restaurant from "../models/Restaurant";
 import Order from "../models/Order";
 
+const updateMyRestaurantOrderStatus = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+
+    let order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    let restaurant = await Restaurant.findById(order.restaurant);
+    if (req.userId !== restaurant?.user?._id.toString()) {
+      return res.status(401).send();
+    }
+
+    order.status = status;
+    await order.save();
+
+    res.json(order);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ message: "Error updating order status." });
+  }
+};
+
 const getMyRestaurantOrders = async (req: Request, res: Response) => {
   try {
     const restaurant = await Restaurant.findOne({ user: req.userId });
@@ -106,6 +132,7 @@ const updateMyRestaurant = async (req: Request, res: Response) => {
 };
 
 export default {
+  updateMyRestaurantOrderStatus,
   getMyRestaurantOrders,
   getMyRestaurant,
   createMyRestaurant,
